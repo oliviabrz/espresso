@@ -22,8 +22,8 @@ autonumber
     participant api as EspressoApiService
     participant db as EspressoDatabase
     
-    user->>+api: GET: /grinder/{grinderId}
-        api->>+db: select from table Grinder where id = grinderId
+    user->>+api: GET: /grinder/{id}
+        api->>+db: select from table Grinder where id = id
         db-->>-api: return grinder record
     api-->>-user: return http status code and grinder record
 ```
@@ -36,8 +36,8 @@ autonumber
     participant api as EspressoApiService
     participant db as EspressoDatabase
     
-    user->>+api: PUT: /grinder {grinderId, grinderName}
-        api->>+db: update table Grinder where id = grinderId
+    user->>+api: PUT: /grinder/{id} {brandName: " "}
+        api->>+db: update table Grinder where id = id
         db-->>-api: return
     api-->>-user: return http status code
 ```
@@ -50,8 +50,8 @@ autonumber
     participant api as EspressoApiService
     participant db as EspressoDatabase
     
-    user->>+api: DELETE: /grinder/{grinderId}
-        api->>+db: delete table Grinder where id = grinderId
+    user->>+api: DELETE: /grinder/{id}
+        api->>+db: delete table Grinder where id = id
         db-->>-api: return
     api-->>-user: return http status code
 ```

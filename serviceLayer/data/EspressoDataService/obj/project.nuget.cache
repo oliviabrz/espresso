@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Y1OT5jeJTCk=",
+  "dgSpecHash": "MC0SjkKdT2U=",
   "success": true,
   "projectFilePath": "/Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/EspressoDataService.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/oliviabrzozowski/.nuget/packages/dapper/2.1.35/dapper.2.1.35.nupkg.sha512",
+    "/Users/oliviabrzozowski/.nuget/packages/microsoft.extensions.logging.abstractions/7.0.1/microsoft.extensions.logging.abstractions.7.0.1.nupkg.sha512",
+    "/Users/oliviabrzozowski/.nuget/packages/mysqlconnector/2.3.7/mysqlconnector.2.3.7.nupkg.sha512"
+  ],
   "logs": []
 }

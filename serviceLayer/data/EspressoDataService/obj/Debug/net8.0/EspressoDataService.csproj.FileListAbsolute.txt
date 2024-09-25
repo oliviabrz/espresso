@@ -24,3 +24,7 @@
 /Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/obj/Debug/net8.0/EspressoDataService.pdb
 /Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/obj/Debug/net8.0/EspressoDataService.genruntimeconfig.cache
 /Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/obj/Debug/net8.0/ref/EspressoDataService.dll
+/Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/bin/Debug/net8.0/Dapper.dll
+/Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/bin/Debug/net8.0/MySqlConnector.dll
+/Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/obj/Debug/net8.0/EspressoDataService.csproj.AssemblyReference.cache
+/Users/oliviabrzozowski/Development/LearnCsharp/espresso/serviceLayer/data/EspressoDataService/obj/Debug/net8.0/Espresso.7DC91E55.Up2Date

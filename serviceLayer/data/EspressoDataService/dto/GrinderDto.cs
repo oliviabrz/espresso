@@ -1,9 +1,8 @@
+
 namespace EspressoDataService.Dto
 {
-    public class GrinderDto
+    public class GrinderDto : GrinderDtoBase
     {
         public int Id { get; set; }
-        public string? BrandName { get; set; }
-        public string? Model { get; set; }
     }
 }

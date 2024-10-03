@@ -48,11 +48,7 @@ app.MapGet("/grinder/{id}", async (int id, MySqlConnection connection) =>
 {
     var sql = "SELECT * FROM Grinder WHERE Id = @id";
     var grinder = await connection.QueryFirstOrDefaultAsync<GrinderDto>(sql, new { id });
-    if (grinder is null)
-    {
-        return Results.NotFound();
-    }
-    return Results.Ok(grinder);
+    return grinder is null ? Results.NotFound() : Results.Ok(grinder);
 });
 
 // UPDATE Grinder API Route
@@ -63,11 +59,7 @@ app.MapPut("/grinder/{id}", async (int id, GrinderDtoBase grinder, MySqlConnecti
         SET BrandName = @BrandName, Model = @Model
         WHERE Id = @id";
     var rowsAffected = await connection.ExecuteAsync(sql, new { id, grinder.BrandName, grinder.Model });
-    if (rowsAffected == 0)
-    {
-        return Results.NotFound();
-    }
-    return Results.NoContent();
+    return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
 });
 
 // DELETE Grinder API Route
@@ -75,11 +67,7 @@ app.MapDelete("/grinder/{id}", async (int id, MySqlConnection connection) =>
 {
     var sql = "DELETE FROM Grinder WHERE Id = @id";
     var rowsAffected = await connection.ExecuteAsync(sql, new { id });
-    if (rowsAffected == 0)
-    {
-        return Results.NotFound();
-    }
-    return Results.NoContent();
+    return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
 });
 
 

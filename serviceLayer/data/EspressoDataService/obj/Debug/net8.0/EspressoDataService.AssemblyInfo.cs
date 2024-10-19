@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EspressoDataService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc34f99aafc22741a1b23bfb40f705ca37f2abd3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a3b04bb310d752773e1aa906f2aa1c050aa776a")]
 [assembly: System.Reflection.AssemblyProductAttribute("EspressoDataService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EspressoDataService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

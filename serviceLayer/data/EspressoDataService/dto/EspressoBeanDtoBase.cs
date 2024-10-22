@@ -1,0 +1,11 @@
+namespace EspressoDataService.Dto
+{
+    public class EspressoBeanDtoBase
+    {
+        public string? Name { get; set; }
+        public DateTime RoastDate { get; set; }
+        public DateTime PurchasedDate { get; set; }
+        public string? PurchasedFrom { get; set; }
+        public string? RoastType { get; set; }
+    }
+}

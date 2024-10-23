@@ -9,55 +9,109 @@ public static class JournalEntryApi
 {
     public static WebApplication MapJournalEntryApiEndpoints(this WebApplication app)
     {
-        #region Api Routes - Grinder
-        // CREATE Grinder API Route
-        app.MapPost("/grinder", async (GrinderDtoBase grinder, MySqlConnection connection) =>
+        // CREATE
+        app.MapPost("/journalentry", async (JournalEntryDtoBase journalEntry, MySqlConnection connection) =>
         {
             var sql = @"
-        INSERT INTO Grinder (BrandName, Model) 
-        VALUES (@BrandName, @Model);
-        SELECT LAST_INSERT_ID();";
-            var id = await connection.ExecuteScalarAsync<int>(sql, grinder);
-            return Results.Created($"/grinder/{id}", id);
+                INSERT INTO JournalEntry (
+                    EspressoBeanId, 
+                    GrinderId, 
+                    GrindSetting, 
+                    BeanWeightInGrams, 
+                    PreExtractionTimeInSeconds, 
+                    ExtractionTimeInSeconds, 
+                    EspressoWeightInGrams, 
+                    BitternessRank, 
+                    AcidityRank, 
+                    SourRank, 
+                    CremaRank, 
+                    SatisfactionRank, 
+                    Comments, 
+                    DateCreate, 
+                    DateUpdate)
+                VALUES (@EspressoBeanId,
+                    @GrinderId,@GrindSetting,
+                    @BeanWeightInGrams,
+                    @PreExtractionTimeInSeconds,
+                    @ExtractionTimeInSeconds,
+                    @EspressoWeightInGrams,
+                    @BitternessRank,
+                    @AcidityRank,
+                    @SourRank,
+                    @CremaRank,
+                    @SatisfactionRank,
+                    @Comments,
+                    @DateCreate,
+                    @DateUpdate);
+                SELECT LAST_INSERT_ID();";
+            var id = await connection.ExecuteScalarAsync<int>(sql, journalEntry);
+            return Results.Created($"/journalentry/{id}", id);
         })
         .Produces<int>(StatusCodes.Status201Created);
 
-        // READ All Grinder API Route
-        app.MapGet("/grinder", async (MySqlConnection connection) =>
+        // READ
+        app.MapGet("/journalentry", async (MySqlConnection connection) =>
         {
-            var sql = "SELECT * FROM Grinder";
-            var grinders = await connection.QueryAsync<GrinderDto>(sql);
-            return Results.Ok(grinders);
+            var sql = "SELECT * FROM JournalEntry";
+            var enumerable = await connection.QueryAsync<JournalEntryDto>(sql);
+            return Results.Ok(enumerable);
         })
-        .Produces<IEnumerable<GrinderDto>>(StatusCodes.Status200OK);
+        .Produces<IEnumerable<JournalEntryDto>>(StatusCodes.Status200OK);
 
-        // READ One Grinder API Route
-        app.MapGet("/grinder/{id}", async (int id, MySqlConnection connection) =>
+        // READ by ID
+        app.MapGet("/journalentry/{id}", async (int id, MySqlConnection connection) =>
         {
-            var sql = "SELECT * FROM Grinder WHERE Id = @id";
-            var grinder = await connection.QueryFirstOrDefaultAsync<GrinderDto>(sql, new { id });
-            return grinder is null ? Results.NotFound() : Results.Ok(grinder);
+            var sql = "SELECT * FROM JournalEntry WHERE Id = @id";
+            var item = await connection.QueryFirstOrDefaultAsync<JournalEntryDto>(sql, new { id });
+            return item is null ? Results.NotFound() : Results.Ok(item);
         });
 
-        // UPDATE Grinder API Route
-        app.MapPut("/grinder/{id}", async (int id, GrinderDtoBase grinder, MySqlConnection connection) =>
+        // UPDATE
+        app.MapPut("/journalentry/{id}", async (int id, JournalEntryDtoBase journalEntry, MySqlConnection connection) =>
         {
             var sql = @"
-        UPDATE Grinder 
-        SET BrandName = @BrandName, Model = @Model
-        WHERE Id = @id";
-            var rowsAffected = await connection.ExecuteAsync(sql, new { id, grinder.BrandName, grinder.Model });
+                UPDATE JournalEntry
+                SET EspressoBeanId = @EspressoBeanId,
+                    GrinderId = @GrinderId,
+                    GrindSetting = @GrindSetting,
+                    BeanWeightInGrams = @BeanWeightInGrams,
+                    PreExtractionTimeInSeconds = @PreExtractionTimeInSeconds,
+                    ExtractionTimeInSeconds = @ExtractionTimeInSeconds,
+                    EspressoWeightInGrams = @EspressoWeightInGrams,
+                    BitternessRank = @BitternessRank,
+                    AcidityRank = @AcidityRank,
+                    SourRank = @SourRank,
+                    CremaRank = @CremaRank,
+                    SatisfactionRank = @SatisfactionRank,
+                    Comments = @Comments,
+                    DateUpdate = @DateUpdate
+                WHERE Id = @id";
+            var rowsAffected = await connection.ExecuteAsync(sql, 
+                new { id, 
+                    journalEntry.EspressoBeanId, 
+                    journalEntry.GrinderId, 
+                    journalEntry.GrindSetting, 
+                    journalEntry.BeanWeightInGrams, 
+                    journalEntry.PreExtractionTimeInSeconds, 
+                    journalEntry.ExtractionTimeInSeconds, 
+                    journalEntry.EspressoWeightInGrams, 
+                    journalEntry.BitternessRank, 
+                    journalEntry.AcidityRank, 
+                    journalEntry.SourRank, 
+                    journalEntry.CremaRank, 
+                    journalEntry.SatisfactionRank, 
+                    journalEntry.Comments, 
+                    journalEntry.DateUpdate });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 
-        // DELETE Grinder API Route
-        app.MapDelete("/grinder/{id}", async (int id, MySqlConnection connection) =>
+        // DELETE
+        app.MapDelete("/journalentry/{id}", async (int id, MySqlConnection connection) =>
         {
-            var sql = "DELETE FROM Grinder WHERE Id = @id";
+            var sql = "DELETE FROM JournalEntry WHERE Id = @id";
             var rowsAffected = await connection.ExecuteAsync(sql, new { id });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
-        #endregion
 
         return app;
     }

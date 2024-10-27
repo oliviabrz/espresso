@@ -1,9 +1,22 @@
-using System;
 using Dapper;
 using EspressoDataService.Dto;
 using MySqlConnector;
 
 namespace EspressoDataService.Api;
+
+public class MyClass1 : IMyInterface {
+    public void MyMethod() {
+        Console.WriteLine("Hello from MyClass1");
+    }
+};
+public class MyClass2 : IMyInterface {
+    public void MyMethod() {
+        Console.WriteLine("Hello from MyClass2");
+    }
+};
+public interface IMyInterface {
+    public void MyMethod();
+}
 
 public static class EspressoBeanApi
 {
@@ -22,8 +35,11 @@ public static class EspressoBeanApi
         .Produces<int>(StatusCodes.Status201Created);
 
         // READ
-        app.MapGet("/espressobean", async (MySqlConnection connection) =>
+        app.MapGet("/espressobean", async (MySqlConnection connection, IMyInterface myClass) =>
         {
+            // IMyInterface myClass = new MyClass2();
+            myClass.MyMethod();
+
             var sql = "SELECT * FROM EspressoBean";
             var enumerable = await connection.QueryAsync<EspressoBeanDto>(sql);
             return Results.Ok(enumerable);

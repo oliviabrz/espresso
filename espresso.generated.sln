@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{0A1C14AD-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EspressoDataService", "serviceLayer\data\EspressoDataService\EspressoDataService.csproj", "{F6E5A04E-E85E-4944-A85A-27AA98DB7831}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EspressoJournal", "EspressoJournal\EspressoJournal.csproj", "{F7EE3B32-2857-4715-B334-E0884360CC4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{F6E5A04E-E85E-4944-A85A-27AA98DB7831}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6E5A04E-E85E-4944-A85A-27AA98DB7831}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6E5A04E-E85E-4944-A85A-27AA98DB7831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7EE3B32-2857-4715-B334-E0884360CC4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7EE3B32-2857-4715-B334-E0884360CC4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7EE3B32-2857-4715-B334-E0884360CC4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7EE3B32-2857-4715-B334-E0884360CC4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

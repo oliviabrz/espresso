@@ -8,7 +8,7 @@ autonumber
     participant api as EspressoApiService
     participant db as EspressoDatabase
     
-    user->>+api: POST: /grinder {brandName: " "}
+    user->>+api: POST: /grinder {brandName: " ", model: " "}
         api->>+db: insert into table Grinder
         db-->>-api: return Grinder Id
     api-->>-user: return http status code and Grinder Id

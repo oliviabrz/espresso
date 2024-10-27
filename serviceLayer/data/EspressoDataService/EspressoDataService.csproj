@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DependencyInjection/" />
     <Folder Include="Handlers/" />
     <Folder Include="Health/" />
   </ItemGroup>

@@ -12,18 +12,15 @@
 mono_crash.*
 
 # User-specific files (VSCode)
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# .vscode/*
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
 
 # User-specific files (JetBrains Rider)
 .idea/*
 *.sln.iml
-
-# User-specific files (Visual Studio Code)
-.vscode/
 
 # User-specific files (Visual Studio for Mac)
 .idea/

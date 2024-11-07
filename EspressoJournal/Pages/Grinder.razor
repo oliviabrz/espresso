@@ -14,15 +14,15 @@
 </style>
 
 <RadzenDataGrid @ref="grinderGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5"
-    AllowSorting="true" EditMode="@editMode" Data="@orders" TItem="Order" RowUpdate="@OnUpdateRow"
+    AllowSorting="true" EditMode="@editMode" Data="@grinders" TItem="Grinder" RowUpdate="@OnUpdateRow"
     RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
     <HeaderTemplate>
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Add New Order" Click="@InsertRow"
-            Disabled="@(editMode == DataGridEditMode.Single && ordersToInsert.Count() > 0)" />
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Add New Grinder" Click="@InsertRow"
+            Disabled="@(editMode == DataGridEditMode.Single && grindersToInsert.Count() > 0)" />
     </HeaderTemplate>
     <Columns>
-        <RadzenDataGridColumn Property="OrderID" Title="Order ID" Width="120px" Frozen="true" />
-        <RadzenDataGridColumn Property="Customer.CompanyName" Title="Customer" Width="280px">
+        <RadzenDataGridColumn Property="GrinderID" Title="Grinder ID" Width="120px" Frozen="true" />
+        <RadzenDataGridColumn Property="Grinder.BrandName" Title="Brand Name" Width="280px">
             <EditTemplate Context="order">
                 <RadzenDropDown @bind-Value="order.CustomerID" Data="@customers"
                     TextProperty="@nameof(Customer.CompanyName)" ValueProperty="@nameof(Customer.CustomerID)"
@@ -118,4 +118,51 @@
 
 @code {
     RadzenDataGrid<Grinder> grinderGrid;
+    DataGridEditMode editMode = DataGridEditMode.Single;
+    IEnumerable<Grinder> grinders;
+    List<Grinder> grindersToInsert = new List<Grinder>();
+
+    private void InsertRow()
+    {
+        var newGrinder = new Grinder();
+        grindersToInsert.Add(newGrinder);
+        grinderGrid.InsertRow(newGrinder);
+    }
+
+    private void OnUpdateRow(Grinder grinder)
+    {
+        // Logic to handle the row update
+        // For example, save the updated grinder to the database
+        Console.WriteLine($"Updated Grinder: {grinder.BrandName}, {grinder.Model}, {grinder.PurchasedDate}");
+    }
+
+    private void OnCreateRow(Grinder grinder)
+    {
+        // Logic to handle the row creation
+    }
+
+    private void EditRow(Grinder grinder)
+    {
+        grinderGrid.EditRow(grinder);
+    }
+
+    private void DeleteRow(Grinder grinder)
+    {
+        grinderGrid.DeleteRow(grinder);
+    }
+
+    private void SaveRow(Grinder grinder)
+    {
+        grinderGrid.UpdateRow(grinder);
+    }
+
+    private void CancelEdit(Grinder grinder)
+    {
+        grinderGrid.CancelEditRow(grinder);
+    }
+
+    private void Reset()
+    {
+        // Logic to reset the grid
+    }
 }

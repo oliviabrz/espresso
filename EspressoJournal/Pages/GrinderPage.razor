@@ -15,14 +15,14 @@
 </style>
 
 <RadzenDataGrid @ref="grinderGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5"
-    AllowSorting="true" EditMode="@editMode" Data="@grinders" TItem="Grinder" RowUpdate="@OnUpdateRow"
+    AllowSorting="true" EditMode="@editMode" Data="@grinders" TItem="GrinderModel" RowUpdate="@OnUpdateRow"
     RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
     <HeaderTemplate>
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Add New Grinder" Click="@InsertRow"
             Disabled="@(editMode == DataGridEditMode.Single && grindersToInsert.Count() > 0)" />
     </HeaderTemplate>
     <Columns>
-        <RadzenDataGridColumn Property="GrinderID" Title="Grinder ID" Width="120px" Frozen="true" />
+        <RadzenDataGridColumn Property="Grinder.ID" Title="Grinder ID" Width="120px" Frozen="true" />
     
          <RadzenDataGridColumn Property="Grinder.BrandName" Title="Brand Name">
             <EditTemplate Context="grinder">
@@ -38,7 +38,7 @@
 @code {
     RadzenDataGrid<GrinderModel> grinderGrid;
     DataGridEditMode editMode = DataGridEditMode.Single;
-    IEnumerable<GrinderModel> grinders;
+    IEnumerable<GrinderModel> grinders = new List<GrinderModel>();
     List<GrinderModel> grindersToInsert = new List<GrinderModel>();
 
     private void InsertRow()

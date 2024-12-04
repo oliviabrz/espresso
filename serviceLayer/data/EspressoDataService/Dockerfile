@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["EspressoDataService.csproj", "EspressoDataService/"]
 RUN dotnet restore "EspressoDataService/EspressoDataService.csproj"
-COPY . .
+COPY . "EspressoDataService/"
 WORKDIR "/src/EspressoDataService"
 RUN dotnet build "EspressoDataService.csproj" -c Release -o /app/build
 

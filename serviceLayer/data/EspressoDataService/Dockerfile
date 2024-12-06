@@ -20,4 +20,5 @@ RUN dotnet publish "EspressoDataService.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ConnectionStrings__EspressoDatabase="Server=localsql;Port=3306;Database=espresso;User Id=espressoUser;Password=espresso;"
 ENTRYPOINT ["dotnet", "EspressoDataService.dll"]

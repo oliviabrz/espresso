@@ -25,16 +25,23 @@ namespace EspressoJournal
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add Blazor & Radzen services
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            // services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             services.AddScoped<DialogService>();
             services.AddScoped<NotificationService>();
             services.AddScoped<TooltipService>();
             services.AddScoped<ContextMenuService>();
 
+            // Register HttpClientFactory and configure a named client
+            services.AddHttpClient("GrinderApiClient", client =>
+            {
+                client.BaseAddress = new Uri(Configuration["dependencyEndpoint:restApi:espressoDataService:baseUrl"]);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+            });
 
-            services.AddSingleton<WeatherForecastService>();
+            // Add Business services
+            services.AddScoped<GrinderDataAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

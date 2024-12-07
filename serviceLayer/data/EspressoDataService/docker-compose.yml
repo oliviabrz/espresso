@@ -1,0 +1,31 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: espresso
+      MYSQL_USER: espressoUser
+      MYSQL_PASSWORD: espresso
+    ports:
+      - "3306:3306"
+    networks:
+      - espresso-network
+
+  espressodataservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: espressodataservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:5100
+      - ConnectionStrings__EspressoDatabase=Server=mysql-container;Port=3306;Database=espresso;User Id=espressoUser;Password=espresso;
+    ports:
+      - "5100:5100"
+    networks:
+      - espresso-network
+
+networks:
+  espresso-network:
+    driver: bridge

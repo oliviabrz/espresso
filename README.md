@@ -9,6 +9,7 @@
 - Serialization (DTO -> JSON)
 - Deserialization (JSON -> DTO)
 - Extension Methods
+- Constructor
   
 ### Dotnet
 - Dotnet Framework

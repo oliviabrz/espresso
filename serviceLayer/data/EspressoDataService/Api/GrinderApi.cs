@@ -46,7 +46,7 @@ public static class GrinderApi
                 UPDATE Grinder 
                 SET BrandName = @BrandName, Model = @Model
                 WHERE Id = @id";
-            var rowsAffected = await connection.ExecuteAsync(sql, new { id, grinder.BrandName, grinder.Model });
+            var rowsAffected = await connection.ExecuteAsync(sql, new { id, grinder.BrandName, grinder.ModelName });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 

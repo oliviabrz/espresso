@@ -5,6 +5,8 @@
 @using Radzen.Blazor
 @using Microsoft.AspNetCore.Components.Web
 @using EspressoJournal.Models
+@using System.Net.Http.Json
+@inject IHttpClientFactory ClientFactory
 
 <h3>Grinder</h3>
 
@@ -71,7 +73,7 @@
 @code {
     RadzenDataGrid<GrinderModel> grinderGrid;
     DataGridEditMode editMode = DataGridEditMode.Single;
-    IEnumerable<GrinderModel> grinders = new List<GrinderModel>();
+    IEnumerable<GrinderModel> grinders;
     List<GrinderModel> grindersToInsert = new List<GrinderModel>();
 
     List<GrinderModel> grindersToUpdate = new List<GrinderModel>();
@@ -92,10 +94,8 @@
     {
         await base.OnInitializedAsync();
 
-        @* customers = dbContext.Customers;
-        employees = dbContext.Employees; *@
-
-        @* orders = dbContext.Orders.Include("Customer").Include("Employee"); *@
+        var client = ClientFactory.CreateClient("GrinderApiClient");
+        grinders = await client.GetFromJsonAsync<IEnumerable<GrinderModel>>("grinder");
     }
 
     private async Task EditRow(GrinderModel grinder)

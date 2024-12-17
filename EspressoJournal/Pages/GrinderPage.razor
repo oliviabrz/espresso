@@ -90,12 +90,38 @@
         grindersToUpdate.Remove(grinder);
     }
 
+    // Load data from the database
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         var client = ClientFactory.CreateClient("GrinderApiClient");
         grinders = await client.GetFromJsonAsync<IEnumerable<GrinderModel>>("grinder");
+    }
+
+    private async Task InsertRow()
+    {
+        if (editMode == DataGridEditMode.Single)
+        {
+            Reset();
+        }
+
+        var newGrinder = new GrinderModel();
+    
+        grindersToInsert.Add(newGrinder);
+
+        // call underlying radzen datagrid method to insert row
+        await grinderGrid.InsertRow(newGrinder);
+    }
+
+    private async Task OnCreateRow(GrinderModel grinder)
+    {
+        // Logic to handle the row creation
+        var client = ClientFactory.CreateClient("GrinderApiClient");
+        var response = await client.PostAsJsonAsync("grinder", grinder);
+        response.EnsureSuccessStatusCode();
+
+        grindersToInsert.Remove(grinder);
     }
 
     private async Task EditRow(GrinderModel grinder)
@@ -154,27 +180,5 @@
             grinderGrid.CancelEditRow(grinder);
             await grinderGrid.Reload();
         }
-    }
-
-    private async Task InsertRow()
-    {
-        if (editMode == DataGridEditMode.Single)
-        {
-            Reset();
-        }
-
-        var newGrinder = new GrinderModel();
-        grindersToInsert.Add(newGrinder);
-        await grinderGrid.InsertRow(newGrinder);
-    }
-
-    private void OnCreateRow(GrinderModel grinder)
-    {
-        // Logic to handle the row creation
-        @* dbContext.Add(grinder);
-
-        dbContext.SaveChanges(); *@
-
-        grindersToInsert.Remove(grinder);
     }
 }

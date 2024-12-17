@@ -18,3 +18,11 @@
 - Dapper
 - Generics
 - Interface
+
+### Docker
+- rebuild EspressoDataService and start in Docker
+  - `docker compose up --build espressodataservice -d`
+- start pod
+  - `docker compose up espressodataservice -d`
+- stop pod
+  - `docker compose stop espressodataservice`

@@ -29,6 +29,8 @@
   - A blueprint for creating objects in programming. It defines the properties (data) and methods (functions) that the objects created from the class will have.
 - Instance
   - A specific object created from a class that is stored in memory and has a specific lifetime.
+- Compiler
+  - A program that translates code written in a high-level programming language (like C# or Java) into machine code (binary code) that a computer's processor can execute. The compiler checks the code for errors and optimizes it for performance.
 
 ### Dotnet
 - Dotnet Framework

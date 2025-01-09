@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using MySqlConnector;
+using EspressoDataService.DependencyInjection;
 
 namespace EspressoDataService.Extensions;
 
@@ -16,7 +17,8 @@ public static class WebApplicationBuilderExtensions
 
         // Configure MySQL connection and add to DI container
         builder.Services.AddTransient<MySqlConnection>(_ => new MySqlConnection(builder.Configuration.GetConnectionString("EspressoDatabase")));
-
+        builder.Services.AddDependencyInjection();
+        
         return builder;
     }
 }

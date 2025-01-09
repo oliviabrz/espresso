@@ -18,12 +18,13 @@ namespace EspressoJournal.Data
 
         public async Task<IEnumerable<GrinderModel>> GetGrindersAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<GrinderModel>>("grinders");
+            return await _httpClient.GetFromJsonAsync<IEnumerable<GrinderModel>>("grinder");
         }
 
         public async Task AddGrinderAsync(GrinderModel grinder)
         {
-            await _httpClient.PostAsJsonAsync("grinders", grinder);
+            var response = await _httpClient.PostAsJsonAsync("grinder", grinder);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

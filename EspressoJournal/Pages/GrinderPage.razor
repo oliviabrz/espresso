@@ -6,7 +6,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using EspressoJournal.Models
 @using System.Net.Http.Json
-@inject IHttpClientFactory ClientFactory
+@inject GrinderDataAccess dataAccess
 
 <h3>Grinder</h3>
 
@@ -75,7 +75,6 @@
     DataGridEditMode editMode = DataGridEditMode.Single;
     IEnumerable<GrinderModel> grinders;
     List<GrinderModel> grindersToInsert = new List<GrinderModel>();
-
     List<GrinderModel> grindersToUpdate = new List<GrinderModel>();
 
     private void Reset()
@@ -95,8 +94,7 @@
     {
         await base.OnInitializedAsync();
 
-        var client = ClientFactory.CreateClient("GrinderApiClient");
-        grinders = await client.GetFromJsonAsync<IEnumerable<GrinderModel>>("grinder");
+        grinders = await dataAccess.GetGrindersAsync();
     }
 
     private async Task InsertRow()
@@ -117,10 +115,9 @@
     private async Task OnCreateRow(GrinderModel grinder)
     {
         // Logic to handle the row creation
-        var client = ClientFactory.CreateClient("GrinderApiClient");
-        var response = await client.PostAsJsonAsync("grinder", grinder);
-        response.EnsureSuccessStatusCode();
-
+        @* var client = ClientFactory.CreateClient("GrinderApiClient"); *@
+        await dataAccess.AddGrinderAsync(grinder);
+        
         grindersToInsert.Remove(grinder);
     }
 

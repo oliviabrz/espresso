@@ -26,5 +26,17 @@ namespace EspressoJournal.Data
             var response = await _httpClient.PostAsJsonAsync("grinder", grinder);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task UpdateGrinderAsync(GrinderModel grinder)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"grinder/{grinder.ID}", grinder);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task DeleteGrinderAsync(GrinderModel grinder)
+        {
+            var response = await _httpClient.DeleteAsync($"grinder/{grinder.ID}");
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

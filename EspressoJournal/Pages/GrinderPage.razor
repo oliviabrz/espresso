@@ -97,6 +97,8 @@
         grinders = await dataAccess.GetGrindersAsync();
     }
 
+    // Prepares the grid for inserting (create) a new row
+    // Triggered by the click event of the Add New Grinder button
     private async Task InsertRow()
     {
         if (editMode == DataGridEditMode.Single)
@@ -105,50 +107,55 @@
         }
 
         var newGrinder = new GrinderModel();
-    
-        grindersToInsert.Add(newGrinder);
+
+        // grindersToInsert.Add(newGrinder);
 
         // call underlying radzen datagrid method to insert row
         await grinderGrid.InsertRow(newGrinder);
     }
 
+    // Persist new GrinderModel to the database
+    // Triggered by the RowCreate event of the RadzenDataGrid
     private async Task OnCreateRow(GrinderModel grinder)
     {
         // Logic to handle the row creation
-        @* var client = ClientFactory.CreateClient("GrinderApiClient"); *@
         await dataAccess.AddGrinderAsync(grinder);
-        
-        grindersToInsert.Remove(grinder);
+
+        // grindersToInsert.Remove(grinder);
     }
 
+    // Prepares the grid for editing an existing row
+    // Triggered by the click event of the Edit Grinder button
     private async Task EditRow(GrinderModel grinder)
     {
         if (editMode == DataGridEditMode.Single && grindersToInsert.Count() > 0)
         {
-            Reset();
+            //Reset();
         }
 
         grindersToUpdate.Add(grinder);
         await grinderGrid.EditRow(grinder);
     }
 
-     private void OnUpdateRow(GrinderModel grinder)
+    // Persist edited GrinderModel to the database
+    // Triggered by the RowUpdate event of the RadzenDataGrid
+    private async Task OnUpdateRow(GrinderModel grinder)
     {
-        Reset(grinder);
+        // Reset(grinder);
 
-        @* dbContext.Update(grinder);
+        await dataAccess.UpdateGrinderAsync(grinder);
 
-        dbContext.SaveChanges(); *@
     }
 
-     private void SaveRow(GrinderModel grinder)
+
+    private void SaveRow(GrinderModel grinder)
     {
         grinderGrid.UpdateRow(grinder);
     }
 
     private void CancelEdit(GrinderModel grinder)
     {
-        Reset(grinder);
+        // Reset(grinder);
 
         grinderGrid.CancelEditRow(grinder);
 
@@ -162,14 +169,11 @@
 
     private async Task DeleteRow(GrinderModel grinder)
     {
-        Reset(grinder);
-        
+        // Reset(grinder);
+
         if (grinders.Contains(grinder))
         {
-            @* dbContext.Remove<GrinderModel>(grinder);
-
-            dbContext.SaveChanges(); *@
-
+            await dataAccess.DeleteGrinderAsync(grinder);
             await grinderGrid.Reload();
         }
         else

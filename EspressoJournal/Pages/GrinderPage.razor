@@ -21,7 +21,7 @@
     RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
     <HeaderTemplate>
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Add New Grinder" Click="@InsertRow"
-            Disabled="@(editMode == DataGridEditMode.Single && grindersToInsert.Count() > 0)" />
+            Disabled="@(editMode == DataGridEditMode.Single && grindersToCreate.Count() > 0)" />
     </HeaderTemplate>
     <Columns>
         <RadzenDataGridColumn Property="GrinderModel.ID" Title="Grinder ID" Width="120px" Frozen="true" />
@@ -74,19 +74,23 @@
     RadzenDataGrid<GrinderModel> grinderGrid;
     DataGridEditMode editMode = DataGridEditMode.Single;
     IEnumerable<GrinderModel> grinders;
-    List<GrinderModel> grindersToInsert = new List<GrinderModel>();
+    List<GrinderModel> grindersToCreate = new List<GrinderModel>();
     List<GrinderModel> grindersToUpdate = new List<GrinderModel>();
 
     private void Reset()
     {
-        grindersToInsert.Clear();
+        grindersToCreate.Clear();
         grindersToUpdate.Clear();
     }
 
     private void Reset(GrinderModel grinder)
     {
-        grindersToInsert.Remove(grinder);
-        grindersToUpdate.Remove(grinder);
+        var itemToRemove = grindersToCreate.FirstOrDefault(g => g.ID == grinder.ID);
+        if (itemToRemove != null)
+        {
+            grindersToCreate.Remove(itemToRemove);
+            grindersToUpdate.Remove(itemToRemove);
+        }
     }
 
     // Load data from the database
@@ -108,7 +112,7 @@
 
         var newGrinder = new GrinderModel();
 
-        // grindersToInsert.Add(newGrinder);
+        grindersToCreate.Add(newGrinder);
 
         // call underlying radzen datagrid method to insert row
         await grinderGrid.InsertRow(newGrinder);
@@ -121,19 +125,29 @@
         // Logic to handle the row creation
         await dataAccess.AddGrinderAsync(grinder);
 
-        // grindersToInsert.Remove(grinder);
+        grindersToCreate.Remove(grinder);
+
+        await OnInitializedAsync();
+        await grinderGrid.Reload();
     }
 
     // Prepares the grid for editing an existing row
     // Triggered by the click event of the Edit Grinder button
     private async Task EditRow(GrinderModel grinder)
     {
-        if (editMode == DataGridEditMode.Single && grindersToInsert.Count() > 0)
+        if (editMode == DataGridEditMode.Single && grindersToCreate.Count() > 0)
         {
-            //Reset();
+            Reset();
         }
 
-        grindersToUpdate.Add(grinder);
+        var newGrinder = new GrinderModel
+            {
+                ID = grinder.ID,
+                BrandName = grinder.BrandName,
+                ModelName = grinder.ModelName
+            };
+
+        grindersToUpdate.Add(newGrinder);
         await grinderGrid.EditRow(grinder);
     }
 
@@ -141,10 +155,9 @@
     // Triggered by the RowUpdate event of the RadzenDataGrid
     private async Task OnUpdateRow(GrinderModel grinder)
     {
-        // Reset(grinder);
+        Reset(grinder);
 
         await dataAccess.UpdateGrinderAsync(grinder);
-
     }
 
 
@@ -153,27 +166,25 @@
         grinderGrid.UpdateRow(grinder);
     }
 
-    private void CancelEdit(GrinderModel grinder)
+    private async Task CancelEdit(GrinderModel grinder)
     {
-        // Reset(grinder);
+        var originalGrinder = grindersToUpdate.FirstOrDefault(g => g.ID == grinder.ID);
+        grinder.BrandName = originalGrinder.BrandName;
+        grinder.ModelName = originalGrinder.ModelName;
 
+        Reset(grinder);
         grinderGrid.CancelEditRow(grinder);
-
-        @* var orderEntry = dbContext.Entry(order);
-        if (orderEntry.State == EntityState.Modified)
-        {
-            orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
-            orderEntry.State = EntityState.Unchanged;
-        } *@
+        await grinderGrid.Reload();
     }
 
     private async Task DeleteRow(GrinderModel grinder)
     {
-        // Reset(grinder);
+        Reset(grinder);
 
         if (grinders.Contains(grinder))
         {
             await dataAccess.DeleteGrinderAsync(grinder);
+            await OnInitializedAsync();
             await grinderGrid.Reload();
         }
         else

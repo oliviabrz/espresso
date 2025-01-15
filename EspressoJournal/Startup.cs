@@ -34,7 +34,7 @@ namespace EspressoJournal
             services.AddScoped<ContextMenuService>();
 
             // Register HttpClientFactory and configure a named client
-            services.AddHttpClient("GrinderApiClient", client =>
+            services.AddHttpClient("EspressoDataServiceApiClient", client =>
             {
                 client.BaseAddress = new Uri(Configuration["dependencyEndpoint:restApi:espressoDataService:baseUrl"]);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
@@ -42,6 +42,7 @@ namespace EspressoJournal
 
             // Add Business services
             services.AddScoped<GrinderDataAccess>();
+            services.AddScoped<EspressoBeanDataAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

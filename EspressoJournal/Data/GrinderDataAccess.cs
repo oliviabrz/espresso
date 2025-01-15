@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -13,7 +12,7 @@ namespace EspressoJournal.Data
 
         public GrinderDataAccess(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("GrinderApiClient");
+            _httpClient = httpClientFactory.CreateClient("EspressoDataServiceApiClient");
         }
 
         public async Task<IEnumerable<GrinderModel>> GetGrindersAsync()

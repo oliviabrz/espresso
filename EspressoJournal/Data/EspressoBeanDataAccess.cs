@@ -17,7 +17,8 @@ namespace EspressoJournal.Data
 
         public async Task<IEnumerable<EspressoBeanModel>> GetEspressoBeansAsync()
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<EspressoBeanModel>>("espressobean");
+            var response = await _httpClient.GetFromJsonAsync<IEnumerable<EspressoBeanModel>>("espressobean");
+            return response;
         }
 
         public async Task AddEspressoBeanAsync(EspressoBeanModel espressoBean)

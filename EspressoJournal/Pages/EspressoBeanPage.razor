@@ -1,0 +1,226 @@
+@page "/espressoBean"
+
+@using EspressoJournal.Data
+@using Radzen
+@using Radzen.Blazor
+@using Microsoft.AspNetCore.Components.Web
+@using EspressoJournal.Models
+@using System.Net.Http.Json
+@inject EspressoBeanDataAccess dataAccess
+
+<h3>Espresso Bean</h3>
+
+<style>
+    .rz-grid-table {
+        width: unset;
+    }
+</style>
+
+<RadzenDataGrid @ref="espressoBeanGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5"
+    AllowSorting="true" EditMode="@editMode" Data="@espressoBeans" TItem="EspressoBeanModel" RowUpdate="@OnUpdateRow"
+    RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
+    <HeaderTemplate>
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Add New Espresso Bean" Click="@InsertRow"
+            Disabled="@(editMode == DataGridEditMode.Single && espressoBeansToCreate.Count() > 0)" />
+    </HeaderTemplate>
+    <Columns>
+        <RadzenDataGridColumn Property="EspressoBeanModel.Id" Title="ID" Width="120px" Frozen="true" />
+
+        <RadzenDataGridColumn Property="EspressoBeanModel.Name" Title="Name">
+            <EditTemplate Context="espressoBean">
+                <RadzenTextBox @bind-Value="espressoBean.Name" Style="width:200px; display: block" Name="Name"
+                    aria-label="Enter espressoBean name" />
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="EspressoBean.RoastDate" Title="Roast Date">
+            <EditTemplate Context="espressoBean">
+                <RadzenDatePicker @bind-Value="espressoBean.RoastDate" Style="width:200px; display: block" Name="RoastDate"
+                    aria-label="Enter espressoBean roast date" />
+                <RadzenRequiredValidator Text="RoastDate is required" Component="RoastDate" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="EspressoBean.PurchasedDate" Title="Purchased Date" Context="espressoBean">
+            <EditTemplate Context="espressoBean">
+                <RadzenDatePicker @bind-Value="espressoBean.PurchasedDate" Style="width:200px; display: block" Name="PurchasedDate"
+                    aria-label="Enter espressoBean purchase date" />
+                <RadzenRequiredValidator Text="PurchasedDate is required" Component="PurchasedDate" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="EspressoBean.PurchasedFrom" Title="Purchased From">
+            <EditTemplate Context="espressoBean">
+                <RadzenTextBox @bind-Value="espressoBean.PurchasedFrom" Style="width:200px; display: block" Name="PurchasedFrom"
+                    aria-label="Enter espressoBean purchased from" />
+                <RadzenRequiredValidator Text="PurchasedFrom is required" Component="PurchasedFrom" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Property="EspressoBean.RoastType" Title="Roast Type">
+            <EditTemplate Context="espressoBean">
+                <RadzenTextBox @bind-Value="espressoBean.RoastType" Style="width:200px; display: block" Name="RoastType"
+                    aria-label="Enter espressoBean roast type" />
+                <RadzenRequiredValidator Text="RoastType is required" Component="RoastType" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn Context="espressoBean" Filterable="false" Sortable="false" TextAlign="TextAlign.Right"
+            Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+            <Template Context="espressoBean">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"
+                    Size="ButtonSize.Medium" Click="@(args => EditRow(espressoBean))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat"
+                    Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1"
+                    Click="@(args => DeleteRow(espressoBean))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="espressoBean">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat"
+                    Size="ButtonSize.Medium" Click="@((args) => SaveRow(espressoBean))" aria-label="Save">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"
+                    Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" Click="@((args) => CancelEdit(espressoBean))"
+                    aria-label="Cancel">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat"
+                    Shade="Shade.Lighter" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1"
+                    Click="@(args => DeleteRow(espressoBean))" aria-label="Delete">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    RadzenDataGrid<EspressoBeanModel> espressoBeanGrid;
+    DataGridEditMode editMode = DataGridEditMode.Single;
+    IEnumerable<EspressoBeanModel> espressoBeans;
+    List<EspressoBeanModel> espressoBeansToCreate = new List<EspressoBeanModel>();
+    List<EspressoBeanModel> espressoBeansToUpdate = new List<EspressoBeanModel>();
+
+    private void Reset()
+    {
+        espressoBeansToCreate.Clear();
+        espressoBeansToUpdate.Clear();
+    }
+
+    private void Reset(EspressoBeanModel espressoBean)
+    {
+        var itemToRemove = espressoBeansToCreate.FirstOrDefault(g => g.Id == espressoBean.Id);
+        if (itemToRemove != null)
+        {
+            espressoBeansToCreate.Remove(itemToRemove);
+            espressoBeansToUpdate.Remove(itemToRemove);
+        }
+    }
+
+    // Load data from the database
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        espressoBeans = await dataAccess.GetEspressoBeansAsync();
+    }
+
+    // Prepares the grid for inserting (create) a new row
+    // Triggered by the click event of the Add New EspressoBean button
+    private async Task InsertRow()
+    {
+        if (editMode == DataGridEditMode.Single)
+        {
+            Reset();
+        }
+
+        var newEspressoBean = new EspressoBeanModel();
+
+        espressoBeansToCreate.Add(newEspressoBean);
+
+        // call underlying radzen datagrid method to insert row
+        await espressoBeanGrid.InsertRow(newEspressoBean);
+    }
+
+    // Persist new EspressoBeanModel to the database
+    // Triggered by the RowCreate event of the RadzenDataGrid
+    private async Task OnCreateRow(EspressoBeanModel espressoBean)
+    {
+        // Logic to handle the row creation
+        await dataAccess.AddEspressoBeanAsync(espressoBean);
+
+        espressoBeansToCreate.Remove(espressoBean);
+
+        await OnInitializedAsync();
+        await espressoBeanGrid.Reload();
+    }
+
+    // Prepares the grid for editing an existing row
+    // Triggered by the click event of the Edit EspressoBean button
+    private async Task EditRow(EspressoBeanModel espressoBean)
+    {
+        if (editMode == DataGridEditMode.Single && espressoBeansToCreate.Count() > 0)
+        {
+            Reset();
+        }
+
+        var newEspressoBean = new EspressoBeanModel
+            {
+                Id = espressoBean.Id,
+                Name = espressoBean.Name,
+                RoastDate = espressoBean.RoastDate,
+                PurchasedDate = espressoBean.PurchasedDate,
+                PurchasedFrom = espressoBean.PurchasedFrom,
+                RoastType = espressoBean.RoastType
+            };
+
+        espressoBeansToUpdate.Add(newEspressoBean);
+        await espressoBeanGrid.EditRow(espressoBean);
+    }
+
+    // Persist edited EspressoBeanModel to the database
+    // Triggered by the RowUpdate event of the RadzenDataGrid
+    private async Task OnUpdateRow(EspressoBeanModel espressoBean)
+    {
+        Reset(espressoBean);
+
+        await dataAccess.UpdateEspressoBeanAsync(espressoBean);
+    }
+
+
+    private void SaveRow(EspressoBeanModel espressoBean)
+    {
+        espressoBeanGrid.UpdateRow(espressoBean);
+    }
+
+    private async Task CancelEdit(EspressoBeanModel espressoBean)
+    {
+        var originalEspressoBean = espressoBeansToUpdate.FirstOrDefault(g => g.Id == espressoBean.Id);
+        espressoBean.Name = originalEspressoBean.Name;
+        espressoBean.RoastDate = originalEspressoBean.RoastDate;
+        espressoBean.PurchasedDate = originalEspressoBean.PurchasedDate;
+        espressoBean.PurchasedFrom = originalEspressoBean.PurchasedFrom;
+        espressoBean.RoastType = originalEspressoBean.RoastType;
+
+        Reset(espressoBean);
+        espressoBeanGrid.CancelEditRow(espressoBean);
+        await espressoBeanGrid.Reload();
+    }
+
+    private async Task DeleteRow(EspressoBeanModel espressoBean)
+    {
+        Reset(espressoBean);
+
+        if (espressoBeans.Contains(espressoBean))
+        {
+            await dataAccess.DeleteEspressoBeanAsync(espressoBean);
+            await OnInitializedAsync();
+            await espressoBeanGrid.Reload();
+        }
+        else
+        {
+            espressoBeanGrid.CancelEditRow(espressoBean);
+            await espressoBeanGrid.Reload();
+        }
+    }
+}

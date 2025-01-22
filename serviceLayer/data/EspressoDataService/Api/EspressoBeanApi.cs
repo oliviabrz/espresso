@@ -26,8 +26,8 @@ public static class EspressoBeanApi
         app.MapPost("/espressobean", async (EspressoBeanDtoBase espressoBean, MySqlConnection connection) =>
         {
             var sql = @"
-                INSERT INTO EspressoBean (Name, RoastDate, PurchasedDate, PurchasedFrom, RoastType) 
-                VALUES (@Name, @RoastDate, @PurchasedDate, @PurchasedFrom, @RoastType);
+                INSERT INTO EspressoBean (Name, RoastDate, PurchasedDate, PurchasedFrom, RoastTypeId) 
+                VALUES (@Name, @RoastDate, @PurchasedDate, @PurchasedFrom, @RoastTypeaId);
                 SELECT LAST_INSERT_ID();";
             var id = await connection.ExecuteScalarAsync<int>(sql, espressoBean);
             return Results.Created($"/espressobean/{id}", id);
@@ -40,7 +40,7 @@ public static class EspressoBeanApi
             // IMyInterface myClass = new MyClass2();
             myClass.MyMethod();
 
-            var sql = "SELECT * FROM EspressoBean";
+            var sql = "SELECT * FROM EspressoBean, RoastTypeLookup ";
             var enumerable = await connection.QueryAsync<EspressoBeanDto>(sql);
             return Results.Ok(enumerable);
         })
@@ -63,7 +63,7 @@ public static class EspressoBeanApi
                     RoastDate = @RoastDate, 
                     PurchasedDate = @PurchasedDate, 
                     PurchasedFrom = @PurchasedFrom, 
-                    RoastType = @RoastType
+                    RoastTypeId = @RoastTypeId
                 WHERE Id = @id";
             var rowsAffected = await connection.ExecuteAsync(sql, 
                 new { id, 
@@ -71,7 +71,7 @@ public static class EspressoBeanApi
                     espressoBean.RoastDate, 
                     espressoBean.PurchasedDate, 
                     espressoBean.PurchasedFrom, 
-                    espressoBean.RoastType });
+                    espressoBean.RoastTypeId });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 

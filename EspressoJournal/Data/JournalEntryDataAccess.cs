@@ -15,7 +15,7 @@ namespace EspressoJournal.Data
             _httpClient = httpClientFactory.CreateClient("EspressoDataServiceApiClient");
         }
 
-        public async Task<IEnumerable<JournalEntryModel>> GetJournalEntryAsync()
+        public async Task<IEnumerable<JournalEntryModel>> GetJournalEntriesAsync()
         {
             return await _httpClient.GetFromJsonAsync<IEnumerable<JournalEntryModel>>("journalentry");
         }

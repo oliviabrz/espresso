@@ -4,17 +4,22 @@ using MySqlConnector;
 
 namespace EspressoDataService.Api;
 
-public class MyClass1 : IMyInterface {
-    public void MyMethod() {
+public class MyClass1 : IMyInterface
+{
+    public void MyMethod()
+    {
         Console.WriteLine("Hello from MyClass1");
     }
 };
-public class MyClass2 : IMyInterface {
-    public void MyMethod() {
+public class MyClass2 : IMyInterface
+{
+    public void MyMethod()
+    {
         Console.WriteLine("Hello from MyClass2");
     }
 };
-public interface IMyInterface {
+public interface IMyInterface
+{
     public void MyMethod();
 }
 
@@ -27,7 +32,7 @@ public static class EspressoBeanApi
         {
             var sql = @"
                 INSERT INTO EspressoBean (Name, RoastDate, PurchasedDate, PurchasedFrom, RoastTypeId) 
-                VALUES (@Name, @RoastDate, @PurchasedDate, @PurchasedFrom, @RoastTypeaId);
+                VALUES (@Name, @RoastDate, @PurchasedDate, @PurchasedFrom, @RoastTypeId);
                 SELECT LAST_INSERT_ID();";
             var id = await connection.ExecuteScalarAsync<int>(sql, espressoBean);
             return Results.Created($"/espressobean/{id}", id);
@@ -40,7 +45,18 @@ public static class EspressoBeanApi
             // IMyInterface myClass = new MyClass2();
             myClass.MyMethod();
 
-            var sql = "SELECT * FROM EspressoBean, RoastTypeLookup ";
+            var sql = @"SELECT 
+                            eb.Id,
+                            eb.Name,
+                            eb.RoastDate,
+                            eb.PurchasedDate,
+                            eb.PurchasedFrom,
+                            eb.RoastTypeId
+                            rt.Name AS RoastTypeName
+                        FROM 
+                            EspressoBean eb
+                        JOIN 
+                            RoastTypeLookup rt ON eb.RoastTypeId = rt.Id";
             var enumerable = await connection.QueryAsync<EspressoBeanDto>(sql);
             return Results.Ok(enumerable);
         })
@@ -49,7 +65,19 @@ public static class EspressoBeanApi
         // READ by ID
         app.MapGet("/espressobean/{id}", async (int id, MySqlConnection connection) =>
         {
-            var sql = "SELECT * FROM EspressoBean WHERE Id = @id";
+            var sql = @"SELECT 
+                            eb.Id,
+                            eb.Name,
+                            eb.RoastDate,
+                            eb.PurchasedDate,
+                            eb.PurchasedFrom,
+                            eb.RoastTypeId,
+                            rt.Name AS RoastTypeName
+                        FROM 
+                            EspressoBean eb
+                        JOIN 
+                            RoastTypeLookup rt ON eb.RoastTypeId = rt.Id
+                        WHERE Id = @id";
             var item = await connection.QueryFirstOrDefaultAsync<EspressoBeanDto>(sql, new { id });
             return item is null ? Results.NotFound() : Results.Ok(item);
         });
@@ -65,13 +93,16 @@ public static class EspressoBeanApi
                     PurchasedFrom = @PurchasedFrom, 
                     RoastTypeId = @RoastTypeId
                 WHERE Id = @id";
-            var rowsAffected = await connection.ExecuteAsync(sql, 
-                new { id, 
-                    espressoBean.Name, 
-                    espressoBean.RoastDate, 
-                    espressoBean.PurchasedDate, 
-                    espressoBean.PurchasedFrom, 
-                    espressoBean.RoastTypeId });
+            var rowsAffected = await connection.ExecuteAsync(sql,
+                new
+                {
+                    id,
+                    espressoBean.Name,
+                    espressoBean.RoastDate,
+                    espressoBean.PurchasedDate,
+                    espressoBean.PurchasedFrom,
+                    espressoBean.RoastTypeId
+                });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 

@@ -1,5 +1,6 @@
 using Dapper;
 using MySqlConnector;
+using EspressoDataService.Dto;
 
 namespace EspressoDataService.Api;
 
@@ -12,7 +13,7 @@ public static class RoastTypeApi
         app.MapPost("/roastType", async (string roastTypeName, MySqlConnection connection) =>
         {
             var sql = @"
-                INSERT INTO RoastType (Name) 
+                INSERT INTO RoastTypeLookup (Name) 
                 VALUES (@Name);
                 SELECT LAST_INSERT_ID();";
             var id = await connection.ExecuteScalarAsync<int>(sql, roastTypeName);
@@ -23,35 +24,35 @@ public static class RoastTypeApi
         // READ All RoastType API Route
         app.MapGet("/roastType", async (MySqlConnection connection) =>
         {
-            var sql = "SELECT * FROM RoastType";
-            var enumerable = await connection.QueryAsync<RoastTypeDto>(sql);
+            var sql = "SELECT * FROM RoastTypeLookup";
+            var enumerable = await connection.QueryAsync<RoastTypeLookupDto>(sql);
             return Results.Ok(enumerable);
         })
-        .Produces<IEnumerable<RoastTypeDto>>(StatusCodes.Status200OK);
+        .Produces<IEnumerable<RoastTypeLookupDto>>(StatusCodes.Status200OK);
 
         // READ One RoastType API Route
         app.MapGet("/roastType/{id}", async (int id, MySqlConnection connection) =>
         {
-            var sql = "SELECT * FROM RoastType WHERE Id = @id";
-            var item = await connection.QueryFirstOrDefaultAsync<RoastTypeDto>(sql, new { id });
+            var sql = "SELECT * FROM RoastTypeLookup WHERE Id = @id";
+            var item = await connection.QueryFirstOrDefaultAsync<RoastTypeLookupDto>(sql, new { id });
             return item is null ? Results.NotFound() : Results.Ok(item);
         });
 
         // UPDATE RoastType API Route
-        app.MapPut("/roastType/{id}", async (int id, RoastTypeDtoBase roastType, MySqlConnection connection) =>
+        app.MapPut("/roastType/{id}", async (int id, RoastTypeLookupDto roastType, MySqlConnection connection) =>
         {
             var sql = @"
-                UPDATE RoastType 
-                SET RoastName = @RoastName
+                UPDATE RoastTypeLookup 
+                SET Name = @Name
                 WHERE Id = @id";
-            var rowsAffected = await connection.ExecuteAsync(sql, new { id, roastType.RoastName });
+            var rowsAffected = await connection.ExecuteAsync(sql, new { id, roastType.Name });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 
         // DELETE RoastType API Route
         app.MapDelete("/roastType/{id}", async (int id, MySqlConnection connection) =>
         {
-            var sql = "DELETE FROM RoastType WHERE Id = @id";
+            var sql = "DELETE FROM RoastTypeLookup WHERE Id = @id";
             var rowsAffected = await connection.ExecuteAsync(sql, new { id });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });

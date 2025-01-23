@@ -13,7 +13,8 @@ var app = builder
     .ConfigureWebApplication()
     .MapGrinderApiEndpoints()
     .MapEspressoBeanApiEndpoints()
-    .MapJournalEntryApiEndpoints();
+    .MapJournalEntryApiEndpoints()
+    .MapRoastTypeApiEndpoints();
 
 app.Run();
 return 0;

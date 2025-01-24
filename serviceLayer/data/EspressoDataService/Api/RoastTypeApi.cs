@@ -12,11 +12,11 @@ public static class RoastTypeApi
         // CREATE RoastType API Route
         app.MapPost("/roastType", async (string roastTypeName, MySqlConnection connection) =>
         {
-            var sql = @"
+            var sql = @$"
                 INSERT INTO RoastTypeLookup (Name) 
-                VALUES (@Name);
+                VALUES (""{roastTypeName}"");
                 SELECT LAST_INSERT_ID();";
-            var id = await connection.ExecuteScalarAsync<int>(sql, roastTypeName);
+            var id = await connection.ExecuteScalarAsync<int>(sql);
             return Results.Created($"/roastType/{id}", id);
         })
         .Produces<int>(StatusCodes.Status201Created);
@@ -39,13 +39,13 @@ public static class RoastTypeApi
         });
 
         // UPDATE RoastType API Route
-        app.MapPut("/roastType/{id}", async (int id, RoastTypeLookupDto roastType, MySqlConnection connection) =>
+        app.MapPut("/roastType/{id}", async (int id, string roastTypeName, MySqlConnection connection) =>
         {
-            var sql = @"
+            var sql = @$"
                 UPDATE RoastTypeLookup 
-                SET Name = @Name
+                SET Name = (""{roastTypeName}"")
                 WHERE Id = @id";
-            var rowsAffected = await connection.ExecuteAsync(sql, new { id, roastType.Name });
+            var rowsAffected = await connection.ExecuteAsync(sql, new { id, roastTypeName });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 

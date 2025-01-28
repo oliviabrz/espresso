@@ -51,16 +51,16 @@ public static class EspressoBeanApi
                             eb.RoastDate,
                             eb.PurchasedDate,
                             eb.PurchasedFrom,
-                            eb.RoastTypeId
+                            eb.RoastTypeId,
                             rt.Name AS RoastTypeName
                         FROM 
                             EspressoBean eb
                         JOIN 
                             RoastTypeLookup rt ON eb.RoastTypeId = rt.Id";
-            var enumerable = await connection.QueryAsync<EspressoBeanDto>(sql);
+            var enumerable = await connection.QueryAsync<EspressoBeanResponseDto>(sql);
             return Results.Ok(enumerable);
         })
-        .Produces<IEnumerable<EspressoBeanDto>>(StatusCodes.Status200OK);
+        .Produces<IEnumerable<EspressoBeanResponseDto>>(StatusCodes.Status200OK);
 
         // READ by ID
         app.MapGet("/espressobean/{id}", async (int id, MySqlConnection connection) =>
@@ -77,8 +77,8 @@ public static class EspressoBeanApi
                             EspressoBean eb
                         JOIN 
                             RoastTypeLookup rt ON eb.RoastTypeId = rt.Id
-                        WHERE Id = @id";
-            var item = await connection.QueryFirstOrDefaultAsync<EspressoBeanDto>(sql, new { id });
+                        WHERE eb.Id = @id";
+            var item = await connection.QueryFirstOrDefaultAsync<EspressoBeanResponseDto>(sql, new { id });
             return item is null ? Results.NotFound() : Results.Ok(item);
         });
 

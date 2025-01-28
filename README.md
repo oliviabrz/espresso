@@ -53,3 +53,5 @@
   - `docker compose up espressodataservice -d`
 - stop pod
   - `docker compose stop espressodataservice`
+- remove cached layers
+  - `docker builder prune`

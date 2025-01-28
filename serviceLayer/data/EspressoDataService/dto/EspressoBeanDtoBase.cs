@@ -7,6 +7,5 @@ namespace EspressoDataService.Dto
         public DateTime PurchasedDate { get; set; }
         public string? PurchasedFrom { get; set; }
         public int RoastTypeId { get; set; }
-        public string? RoastTypeName { get; set; }
     }
 }

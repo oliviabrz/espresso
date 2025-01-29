@@ -16,17 +16,17 @@
     }
 </style>
 
-<RadzenDataGrid @ref="espressoBeanGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5"
-    AllowSorting="true" EditMode="@editMode" Data="@espressoBeans" TItem="EspressoBeanModel" RowUpdate="@OnUpdateRow"
-    RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
+<RadzenDataGrid @ref="espressoBeanGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true"
+    PageSize="5" AllowSorting="true" EditMode="@editMode" Data="@espressoBeans" TItem="EspressoBeanModel"
+    RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px">
     <HeaderTemplate>
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Add New Espresso Bean" Click="@InsertRow"
-            Disabled="@(editMode == DataGridEditMode.Single && espressoBeansToCreate.Count() > 0)" />
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle" Text="Add New Espresso Bean"
+            Click="@InsertRow" Disabled="@(editMode == DataGridEditMode.Single && espressoBeansToCreate.Count() > 0)" />
     </HeaderTemplate>
     <Columns>
-        <RadzenDataGridColumn Property="EspressoBeanModel.Id" Title="ID" Width="120px" Frozen="true" />
+        <RadzenDataGridColumn Property="Id" Title="ID" Width="120px" Frozen="true" />
 
-        <RadzenDataGridColumn Property="EspressoBeanModel.Name" Title="Name">
+        <RadzenDataGridColumn Property="Name" Title="Name">
             <EditTemplate Context="espressoBean">
                 <RadzenTextBox @bind-Value="espressoBean.Name" Style="width:200px; display: block" Name="Name"
                     aria-label="Enter espressoBean name" />
@@ -34,35 +34,36 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="EspressoBean.RoastDate" Title="Roast Date">
+        <RadzenDataGridColumn Property="RoastDate" Title="Roast Date">
             <EditTemplate Context="espressoBean">
-                <RadzenDatePicker @bind-Value="espressoBean.RoastDate" Style="width:200px; display: block" Name="RoastDate"
-                    aria-label="Enter espressoBean roast date" />
+                <RadzenDatePicker @bind-Value="espressoBean.RoastDate" Style="width:200px; display: block"
+                    Name="RoastDate" aria-label="Enter espressoBean roast date" />
                 <RadzenRequiredValidator Text="RoastDate is required" Component="RoastDate" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="EspressoBean.PurchasedDate" Title="Purchased Date" Context="espressoBean">
+        <RadzenDataGridColumn Property="PurchasedDate" Title="Purchased Date" Context="espressoBean">
             <EditTemplate Context="espressoBean">
-                <RadzenDatePicker @bind-Value="espressoBean.PurchasedDate" Style="width:200px; display: block" Name="PurchasedDate"
-                    aria-label="Enter espressoBean purchase date" />
+                <RadzenDatePicker @bind-Value="espressoBean.PurchasedDate" Style="width:200px; display: block"
+                    Name="PurchasedDate" aria-label="Enter espressoBean purchase date" />
                 <RadzenRequiredValidator Text="PurchasedDate is required" Component="PurchasedDate" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="EspressoBean.PurchasedFrom" Title="Purchased From">
+        <RadzenDataGridColumn Property="PurchasedFrom" Title="Purchased From">
             <EditTemplate Context="espressoBean">
-                <RadzenTextBox @bind-Value="espressoBean.PurchasedFrom" Style="width:200px; display: block" Name="PurchasedFrom"
-                    aria-label="Enter espressoBean purchased from" />
+                <RadzenTextBox @bind-Value="espressoBean.PurchasedFrom" Style="width:200px; display: block"
+                    Name="PurchasedFrom" aria-label="Enter espressoBean purchased from" />
                 <RadzenRequiredValidator Text="PurchasedFrom is required" Component="PurchasedFrom" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="EspressoBean.RoastType" Title="Roast Type">
-            <EditTemplate Context="espressoBean">
-                <RadzenTextBox @bind-Value="espressoBean.RoastType" Style="width:200px; display: block" Name="RoastType"
-                    aria-label="Enter espressoBean roast type" />
-                <RadzenRequiredValidator Text="RoastType is required" Component="RoastType" Popup="true" />
+        <RadzenDataGridColumn Property="RoastTypeName" Title="Roast Type">
+            <EditTemplate Context="bean">
+                <RadzenDropDown TItem="RoastTypeLookupModel" @bind-Value="bean.RoastTypeName" Data="@roastTypes" TextProperty="Name"
+                    ValueProperty="RoastTypeId" Style="width:200px; display: block" Name="RoastTypeName"
+                    aria-label="Select roast type" />
+                <RadzenRequiredValidator Text="RoastTypeName is required" Component="RoastTypeName" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -100,6 +101,7 @@
     IEnumerable<EspressoBeanModel> espressoBeans;
     List<EspressoBeanModel> espressoBeansToCreate = new List<EspressoBeanModel>();
     List<EspressoBeanModel> espressoBeansToUpdate = new List<EspressoBeanModel>();
+    IEnumerable<RoastTypeLookupModel> roastTypes;
 
     private void Reset()
     {
@@ -123,6 +125,7 @@
         await base.OnInitializedAsync();
 
         espressoBeans = await dataAccess.GetEspressoBeansAsync();
+        roastTypes = await dataAccess.GetRoastTypeLookupAsync();
     }
 
     // Prepares the grid for inserting (create) a new row
@@ -171,7 +174,8 @@
                 RoastDate = espressoBean.RoastDate,
                 PurchasedDate = espressoBean.PurchasedDate,
                 PurchasedFrom = espressoBean.PurchasedFrom,
-                RoastType = espressoBean.RoastType
+                RoastTypeName = espressoBean.RoastTypeName,
+                RoastTypeId = espressoBean.RoastTypeId
             };
 
         espressoBeansToUpdate.Add(newEspressoBean);
@@ -200,7 +204,8 @@
         espressoBean.RoastDate = originalEspressoBean.RoastDate;
         espressoBean.PurchasedDate = originalEspressoBean.PurchasedDate;
         espressoBean.PurchasedFrom = originalEspressoBean.PurchasedFrom;
-        espressoBean.RoastType = originalEspressoBean.RoastType;
+        espressoBean.RoastTypeName = originalEspressoBean.RoastTypeName;
+        espressoBean.RoastTypeId = originalEspressoBean.RoastTypeId;
 
         Reset(espressoBean);
         espressoBeanGrid.CancelEditRow(espressoBean);

@@ -38,5 +38,10 @@ namespace EspressoJournal.Data
             var response = await _httpClient.DeleteAsync($"espressobean/{espressoBean.Id}");
             response.EnsureSuccessStatusCode();
         }
+        public async Task<IEnumerable<RoastTypeLookupModel>> GetRoastTypeLookupAsync()
+        {
+            var response = await _httpClient.GetFromJsonAsync<IEnumerable<RoastTypeLookupModel>>("roastType");
+            return response;
+        }
     }
 }

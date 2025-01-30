@@ -58,12 +58,12 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="RoastTypeName" Title="Roast Type">
+        <RadzenDataGridColumn Property="EspressoBeanModel.RoastTypeName" Title="Roast Type">
             <EditTemplate Context="bean">
-                <RadzenDropDown TItem="RoastTypeLookupModel" @bind-Value="bean.RoastTypeName" Data="@roastTypes" TextProperty="Name"
-                    ValueProperty="RoastTypeId" Style="width:200px; display: block" Name="RoastTypeName"
-                    aria-label="Select roast type" />
-                <RadzenRequiredValidator Text="RoastTypeName is required" Component="RoastTypeName" Popup="true" />
+                <RadzenDropDown @bind-Value="bean.RoastTypeId" Data="@roastTypes" TextProperty="@nameof(RoastTypeLookupModel.RoastTypeName)"
+                    ValueProperty="@nameof(RoastTypeLookupModel.RoastTypeId)" Style="width:200px; display: block"
+                    aria-label="Select roast type"
+                    InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Select roast type" }})" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -194,6 +194,7 @@
 
     private void SaveRow(EspressoBeanModel espressoBean)
     {
+        espressoBean.RoastTypeName = roastTypes.FirstOrDefault(g => g.RoastTypeId == espressoBean.RoastTypeId).RoastTypeName;
         espressoBeanGrid.UpdateRow(espressoBean);
     }
 

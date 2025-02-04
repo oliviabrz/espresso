@@ -5,6 +5,7 @@ namespace EspressoJournal.Models;
 public class JournalEntryModel
 {
     public int EspressoBeanId { get; set; }
+    public int EspressoBeanName { get; set; }
     public int GrinderId { get; set; }
     public int GrindSetting { get; set; }
     public int BeanWeightInGrams { get; set; }

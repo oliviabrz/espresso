@@ -13,6 +13,9 @@
     .rz-grid-table {
         width: unset;
     }
+    .rz-numeric .rz-spinner {
+        display: none; /* Hide the increment/decrement buttons */
+    }
 </style>
 
 <RadzenDataGrid @ref="journalEntryGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true"
@@ -24,75 +27,97 @@
             Disabled="@(editMode == DataGridEditMode.Single && journalEntriesToCreate.Count() > 0)" />
     </HeaderTemplate>
     <Columns>
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="Id" Title="ID" Width="120px" Frozen="true" />
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="EspressoBeanId" Title="Espresso Bean ID">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="EspressoBeanName" Title="Espresso Bean Name">
             <EditTemplate Context="journalEntry">
-                <RadzenNumeric @bind-Value="journalEntry.EspressoBeanId" Style="width:100%" />
+                <RadzenDropDown @bind-Value="journalEntry.EspressoBeanId" Data="@journalEntries.Select(j => new
+                {
+                    Id = j.EspressoBeanId,
+                    Name = j.EspressoBeanName
+                })" TextProperty="Name" ValueProperty="Id" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="GrinderId" Title="Grinder ID">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.GrinderId" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="GrindSetting" Title="Grind Setting">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.GrindSetting" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="BeanWeightInGrams" Title="Bean Weight (g)">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.BeanWeightInGrams" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="PreExtractionTimeInSeconds"
             Title="Pre-Extraction Time (s)">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.PreExtractionTimeInSeconds" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="ExtractionTimeInSeconds" Title="Extraction Time (s)">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.ExtractionTimeInSeconds" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="EspressoWeightInGrams" Title="Espresso Weight (g)">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.EspressoWeightInGrams" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="BitternessRank" Title="Bitterness Rank">
             <EditTemplate Context="journalEntry">
-                <RadzenNumeric @bind-Value="journalEntry.BitternessRank" Style="width:100%" />
+                <RadzenDropDown @bind-Value="journalEntry.BitternessRank" Data="@rankings" TextProperty="Name"
+                    ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="AcidityRank" Title="Acidity Rank">
             <EditTemplate Context="journalEntry">
-                <RadzenNumeric @bind-Value="journalEntry.AcidityRank" Style="width:100%" />
+                <RadzenDropDown @bind-Value="journalEntry.AcidityRank" Data="@rankings" TextProperty="Name"
+                    ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="SourRank" Title="Sour Rank">
             <EditTemplate Context="journalEntry">
-                <RadzenNumeric @bind-Value="journalEntry.SourRank" Style="width:100%" />
+                <RadzenDropDown @bind-Value="journalEntry.SourRank" Data="@rankings" TextProperty="Name"
+                    ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="CremaRank" Title="Crema Rank">
             <EditTemplate Context="journalEntry">
-                <RadzenNumeric @bind-Value="journalEntry.CremaRank" Style="width:100%" />
+                <RadzenDropDown @bind-Value="journalEntry.CremaRank" Data="@rankings" TextProperty="Name"
+                    ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="SatisfactionRank" Title="Satisfaction Rank">
             <EditTemplate Context="journalEntry">
-                <RadzenNumeric @bind-Value="journalEntry.SatisfactionRank" Style="width:100%" />
+                <RadzenDropDown @bind-Value="journalEntry.SatisfactionRank" Data="@rankings" TextProperty="Name"
+                    ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="Comments" Title="Comments">
             <EditTemplate Context="journalEntry">
                 <RadzenTextBox @bind-Value="journalEntry.Comments" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="DateCreate" Title="Date Created" Frozen="true" />
+
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="DateUpdate" Title="Date Updated" Frozen="true" />
 
         <RadzenDataGridColumn Context="journalEntry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right"
@@ -129,7 +154,14 @@
     IEnumerable<JournalEntryModel> journalEntries;
     List<JournalEntryModel> journalEntriesToCreate = new List<JournalEntryModel>();
     List<JournalEntryModel> journalEntriesToUpdate = new List<JournalEntryModel>();
-
+    List<object> rankings = new List<object> 
+        { 
+            new { Name = "1", Value = 1 }, 
+            new { Name = "2", Value = 2 }, 
+            new { Name = "3", Value = 3 }, 
+            new { Name = "4", Value = 4 }, 
+            new { Name = "5", Value = 5 } 
+        };
     private void Reset()
     {
         journalEntriesToCreate.Clear();

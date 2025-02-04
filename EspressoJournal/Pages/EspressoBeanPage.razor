@@ -37,7 +37,7 @@
         <RadzenDataGridColumn Property="RoastDate" Title="Roast Date">
             <EditTemplate Context="espressoBean">
                 <RadzenDatePicker @bind-Value="espressoBean.RoastDate" Style="width:200px; display: block"
-                    Name="RoastDate" aria-label="Enter espressoBean roast date" />
+                    Name="RoastDate" aria-label="Enter espressoBean roast date" DateFormat="MM-dd-yyyy" />
                 <RadzenRequiredValidator Text="RoastDate is required" Component="RoastDate" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
@@ -45,7 +45,7 @@
         <RadzenDataGridColumn Property="PurchasedDate" Title="Purchased Date" Context="espressoBean">
             <EditTemplate Context="espressoBean">
                 <RadzenDatePicker @bind-Value="espressoBean.PurchasedDate" Style="width:200px; display: block"
-                    Name="PurchasedDate" aria-label="Enter espressoBean purchase date" />
+                    Name="PurchasedDate" aria-label="Enter espressoBean purchase date" DateFormat="MM-dd-yyyy" />
                 <RadzenRequiredValidator Text="PurchasedDate is required" Component="PurchasedDate" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>

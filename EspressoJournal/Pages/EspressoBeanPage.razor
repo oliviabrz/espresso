@@ -34,17 +34,17 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="RoastDate" Title="Roast Date">
+        <RadzenDataGridColumn Property="RoastDate" Title="Roast Date" FormatString="{0:MM-dd-yyyy}">
             <EditTemplate Context="espressoBean">
-                <RadzenDatePicker @bind-Value="espressoBean.RoastDate" Style="width:200px; display: block"
+                <RadzenDatePicker @bind-Value="@espressoBean.RoastDate" Style="width:200px; display: block"
                     Name="RoastDate" aria-label="Enter espressoBean roast date" DateFormat="MM-dd-yyyy" />
                 <RadzenRequiredValidator Text="RoastDate is required" Component="RoastDate" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn Property="PurchasedDate" Title="Purchased Date" Context="espressoBean">
+        <RadzenDataGridColumn Property="PurchasedDate" Title="Purchased Date" FormatString="{0:MM-dd-yyyy}">
             <EditTemplate Context="espressoBean">
-                <RadzenDatePicker @bind-Value="espressoBean.PurchasedDate" Style="width:200px; display: block"
+                <RadzenDatePicker @bind-Value="@espressoBean.PurchasedDate" Style="width:200px; display: block"
                     Name="PurchasedDate" aria-label="Enter espressoBean purchase date" DateFormat="MM-dd-yyyy" />
                 <RadzenRequiredValidator Text="PurchasedDate is required" Component="PurchasedDate" Popup="true" />
             </EditTemplate>
@@ -60,7 +60,8 @@
 
         <RadzenDataGridColumn Property="EspressoBeanModel.RoastTypeName" Title="Roast Type">
             <EditTemplate Context="bean">
-                <RadzenDropDown @bind-Value="bean.RoastTypeId" Data="@roastTypes" TextProperty="@nameof(RoastTypeLookupModel.RoastTypeName)"
+                <RadzenDropDown @bind-Value="bean.RoastTypeId" Data="@roastTypes"
+                    TextProperty="@nameof(RoastTypeLookupModel.RoastTypeName)"
                     ValueProperty="@nameof(RoastTypeLookupModel.RoastTypeId)" Style="width:200px; display: block"
                     aria-label="Select roast type"
                     InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Select roast type" }})" />

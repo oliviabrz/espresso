@@ -28,9 +28,12 @@ public static class JournalEntryApi
                     SatisfactionRank, 
                     Comments, 
                     DateCreate, 
-                    DateUpdate)
-                VALUES (@EspressoBeanId,
-                    @GrinderId,@GrindSetting,
+                    DateUpdate
+                )
+                VALUES (
+                    @EspressoBeanId,
+                    @GrinderId,
+                    @GrindSetting,
                     @BeanWeightInGrams,
                     @PreExtractionTimeInSeconds,
                     @ExtractionTimeInSeconds,
@@ -42,7 +45,8 @@ public static class JournalEntryApi
                     @SatisfactionRank,
                     @Comments,
                     @DateCreate,
-                    @DateUpdate);
+                    @DateUpdate
+                );
                 SELECT LAST_INSERT_ID();";
             var id = await connection.ExecuteScalarAsync<int>(sql, journalEntry);
             return Results.Created($"/journalentry/{id}", id);
@@ -52,7 +56,17 @@ public static class JournalEntryApi
         // READ
         app.MapGet("/journalentry", async (MySqlConnection connection) =>
         {
-            var sql = "SELECT * FROM JournalEntry";
+            var sql = @"SELECT je.*,
+                            eb.Name AS EspressoBeanName,
+                            g.BrandName AS GrinderBrandName,
+                            g.ModelName AS GrinderModelName
+                        FROM 
+                            JournalEntry je
+                        JOIN
+                            EspressoBean eb ON je.EspressoBeanId = eb.Id
+                        JOIN
+                            Grinder g ON je.GrinderId = g.Id";
+
             var enumerable = await connection.QueryAsync<JournalEntryDto>(sql);
             return Results.Ok(enumerable);
         })
@@ -61,7 +75,17 @@ public static class JournalEntryApi
         // READ by ID
         app.MapGet("/journalentry/{id}", async (int id, MySqlConnection connection) =>
         {
-            var sql = "SELECT * FROM JournalEntry WHERE Id = @id";
+            var sql = @"SELECT je.*,
+                            eb.Name AS EspressoBeanName,
+                            g.BrandName AS GrinderBrandName,
+                            g.ModelName AS GrinderModelName
+                        FROM 
+                            JournalEntry je
+                        JOIN
+                            EspressoBean eb ON je.EspressoBeanId = eb.Id
+                        JOIN
+                            Grinder g ON je.GrinderId = g.Id
+                        WHERE Id = @id";
             var item = await connection.QueryFirstOrDefaultAsync<JournalEntryDto>(sql, new { id });
             return item is null ? Results.NotFound() : Results.Ok(item);
         });
@@ -86,22 +110,25 @@ public static class JournalEntryApi
                     Comments = @Comments,
                     DateUpdate = @DateUpdate
                 WHERE Id = @id";
-            var rowsAffected = await connection.ExecuteAsync(sql, 
-                new { id, 
-                    journalEntry.EspressoBeanId, 
-                    journalEntry.GrinderId, 
-                    journalEntry.GrindSetting, 
-                    journalEntry.BeanWeightInGrams, 
-                    journalEntry.PreExtractionTimeInSeconds, 
-                    journalEntry.ExtractionTimeInSeconds, 
-                    journalEntry.EspressoWeightInGrams, 
-                    journalEntry.BitternessRank, 
-                    journalEntry.AcidityRank, 
-                    journalEntry.SourRank, 
-                    journalEntry.CremaRank, 
-                    journalEntry.SatisfactionRank, 
-                    journalEntry.Comments, 
-                    journalEntry.DateUpdate });
+            var rowsAffected = await connection.ExecuteAsync(sql,
+                new
+                {
+                    id,
+                    journalEntry.EspressoBeanId,
+                    journalEntry.GrinderId,
+                    journalEntry.GrindSetting,
+                    journalEntry.BeanWeightInGrams,
+                    journalEntry.PreExtractionTimeInSeconds,
+                    journalEntry.ExtractionTimeInSeconds,
+                    journalEntry.EspressoWeightInGrams,
+                    journalEntry.BitternessRank,
+                    journalEntry.AcidityRank,
+                    journalEntry.SourRank,
+                    journalEntry.CremaRank,
+                    journalEntry.SatisfactionRank,
+                    journalEntry.Comments,
+                    journalEntry.DateUpdate
+                });
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 

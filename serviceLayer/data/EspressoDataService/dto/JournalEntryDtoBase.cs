@@ -3,7 +3,10 @@ namespace EspressoDataService.Dto
     public class JournalEntryDtoBase
     {
         public int EspressoBeanId { get; set; }
+        public string? EspressoBeanName { get; set; }
         public int GrinderId { get; set; }
+        public string? GrinderBrandName { get; set; }
+        public string? GrinderModelName { get; set; }
         public ushort GrindSetting { get; set; }
         public ushort BeanWeightInGrams { get; set; }
         public ushort PreExtractionTimeInSeconds { get; set; }

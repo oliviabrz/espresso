@@ -5,7 +5,9 @@
 @using Microsoft.AspNetCore.Components.Web
 @using EspressoJournal.Models
 @using System.Net.Http.Json
-@inject JournalEntryDataAccess dataAccess
+@inject JournalEntryDataAccess journalDataAccess
+@inject EspressoBeanDataAccess beanDataAccess
+@inject GrinderDataAccess grinderDataAccess
 
 <h3>Journal Entries</h3>
 
@@ -13,9 +15,6 @@
     .rz-grid-table {
         width: unset;
     }
-    @* .rz-numeric .rz-spinner {
-        display: none !important; /* Hide the increment/decrement buttons */
-    } *@
 </style>
 
 <RadzenDataGrid @ref="journalEntryGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true"
@@ -28,99 +27,108 @@
     </HeaderTemplate>
     <Columns>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="EspressoBeanName" Title="Espresso Bean Name">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="EspressoBeanName" Title="Espresso Bean"
+            Width="100px">
             <EditTemplate Context="journalEntry">
-                <RadzenDropDown @bind-Value="journalEntry.EspressoBeanId" Data="@journalEntries.Select(j => new
-                {
-                    Id = j.EspressoBeanId,
-                    Name = j.EspressoBeanName
-                })" TextProperty="Name" ValueProperty="Id" Style="width:100%" />
+                <RadzenDropDown @bind-Value="journalEntry.EspressoBeanId" Data="@espressoBeans"
+                    TextProperty="@nameof(EspressoBeanModel.Name)" ValueProperty="@nameof(EspressoBeanModel.Id)"
+                    Style="width:200px; display: block" aria-label="Select espresso bean"
+                    InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Select espresso bean" }})" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="GrinderId" Title="Grinder ID">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="GrinderName" Title="Grinder" Width="100px">
             <EditTemplate Context="journalEntry">
-                <RadzenNumeric @bind-Value="journalEntry.GrinderId" Style="width:100%" ShowUpDown="false" />
+                <RadzenDropDown @bind-Value="journalEntry.GrinderId" Data="@grinders"
+                    TextProperty="@nameof(GrinderModel.GrinderName)" ValueProperty="@nameof(GrinderModel.ID)"
+                    Style="width:200px; display: block" aria-label="Select grinder"
+                    InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "Select grinder" }})" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="GrindSetting" Title="Grind Setting">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="GrindSetting" Title="Grind Setting" Width="=100px">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.GrindSetting" Style="width:100%" ShowUpDown="false" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="BeanWeightInGrams" Title="Bean Weight (g)">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="BeanWeightInGrams" Title="Bean Weight (g)"
+            Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.BeanWeightInGrams" Style="width:100%" ShowUpDown="false" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="JournalEntryModel" Property="PreExtractionTimeInSeconds"
-            Title="Pre-Extraction Time (s)">
+            Title="Pre-Extraction Time (s)" Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.PreExtractionTimeInSeconds" Style="width:100%"
                     ShowUpDown="false" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="ExtractionTimeInSeconds" Title="Extraction Time (s)">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="ExtractionTimeInSeconds" Title="Extraction Time (s)"
+            Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.ExtractionTimeInSeconds" Style="width:100%"
                     ShowUpDown="false" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="EspressoWeightInGrams" Title="Espresso Weight (g)">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="EspressoWeightInGrams" Title="Espresso Weight (g)"
+            Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenNumeric @bind-Value="journalEntry.EspressoWeightInGrams" Style="width:100%" ShowUpDown="false" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="BitternessRank" Title="Bitterness Rank">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="BitternessRank" Title="Bitterness Rank" Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenDropDown @bind-Value="journalEntry.BitternessRank" Data="@rankings" TextProperty="Name"
                     ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="AcidityRank" Title="Acidity Rank">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="AcidityRank" Title="Acidity Rank" Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenDropDown @bind-Value="journalEntry.AcidityRank" Data="@rankings" TextProperty="Name"
                     ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="SourRank" Title="Sour Rank">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="SourRank" Title="Sour Rank" Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenDropDown @bind-Value="journalEntry.SourRank" Data="@rankings" TextProperty="Name"
                     ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="CremaRank" Title="Crema Rank">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="CremaRank" Title="Crema Rank" Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenDropDown @bind-Value="journalEntry.CremaRank" Data="@rankings" TextProperty="Name"
                     ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="SatisfactionRank" Title="Satisfaction Rank">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="SatisfactionRank" Title="Satisfaction Rank"
+            Width="100px">
             <EditTemplate Context="journalEntry">
                 <RadzenDropDown @bind-Value="journalEntry.SatisfactionRank" Data="@rankings" TextProperty="Name"
                     ValueProperty="Value" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="Comments" Title="Comments">
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="Comments" Title="Comments" Width="150px">
             <EditTemplate Context="journalEntry">
                 <RadzenTextBox @bind-Value="journalEntry.Comments" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="DateCreate" Title="Date Created" Frozen="true" />
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="DateCreate" Title="Date Created" Frozen="true"
+            FormatString="{0:MM-dd-yyyy HH:mm:ss}" />
 
-        <RadzenDataGridColumn TItem="JournalEntryModel" Property="DateUpdate" Title="Date Updated" Frozen="true" />
+        <RadzenDataGridColumn TItem="JournalEntryModel" Property="DateUpdate" Title="Date Updated" Frozen="true"
+            FormatString="{0:MM-dd-yyyy HH:mm:ss}" />
 
         <RadzenDataGridColumn Context="journalEntry" Filterable="false" Sortable="false" TextAlign="TextAlign.Right"
             Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
@@ -156,6 +164,8 @@
     IEnumerable<JournalEntryModel> journalEntries;
     List<JournalEntryModel> journalEntriesToCreate = new List<JournalEntryModel>();
     List<JournalEntryModel> journalEntriesToUpdate = new List<JournalEntryModel>();
+    IEnumerable<EspressoBeanModel> espressoBeans;
+    IEnumerable<GrinderModel> grinders;
     List<object> rankings = new List<object>
 {
 new { Name = "1", Value = 1 },
@@ -184,13 +194,19 @@ new { Name = "5", Value = 5 }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        journalEntries = await dataAccess.GetJournalEntriesAsync();
+        journalEntries = await journalDataAccess.GetJournalEntriesAsync();
     }
 
     // Prepares the grid for inserting (create) a new row
     // Triggered by the click event of the Add New Journal Entry button
     private async Task InsertRow()
     {
+        // get espresso beans list for dropdown
+        espressoBeans = await beanDataAccess.GetEspressoBeansAsync();
+
+        // get grinders list for dropdown
+        grinders = await grinderDataAccess.GetGrindersAsync();
+
         if (editMode == DataGridEditMode.Single)
         {
             Reset();
@@ -208,7 +224,7 @@ new { Name = "5", Value = 5 }
     // Triggered by the RowCreate event of the RadzenDataGrid
     private async Task OnCreateRow(JournalEntryModel journalEntry)
     {
-        await dataAccess.AddJournalEntryAsync(journalEntry);
+        await journalDataAccess.AddJournalEntryAsync(journalEntry);
         journalEntriesToCreate.Remove(journalEntry);
 
         await OnInitializedAsync();
@@ -217,7 +233,13 @@ new { Name = "5", Value = 5 }
 
     private async Task EditRow(JournalEntryModel journalEntry)
     {
-        if (editMode == DataGridEditMode.Single && journalEntriesToCreate.Count() > 0)
+        // get espresso beans list for dropdown
+        espressoBeans = await beanDataAccess.GetEspressoBeansAsync();
+
+        // get grinders list for dropdown
+        grinders = await grinderDataAccess.GetGrindersAsync();
+
+        if (editMode == DataGridEditMode.Single && journalEntriesToUpdate.Count() > 0)
         {
             Reset();
         }
@@ -226,6 +248,7 @@ new { Name = "5", Value = 5 }
             {
                 Id = journalEntry.Id,
                 EspressoBeanId = journalEntry.EspressoBeanId,
+                EspressoBeanName = journalEntry.EspressoBeanName,
                 GrinderId = journalEntry.GrinderId,
                 GrindSetting = journalEntry.GrindSetting,
                 BeanWeightInGrams = journalEntry.BeanWeightInGrams,
@@ -249,7 +272,7 @@ new { Name = "5", Value = 5 }
     private async Task OnUpdateRow(JournalEntryModel journalEntry)
     {
         Reset(journalEntry);
-        await dataAccess.UpdateJournalEntryAsync(journalEntry);
+        await journalDataAccess.UpdateJournalEntryAsync(journalEntry);
     }
 
     private void SaveRow(JournalEntryModel journalEntry)
@@ -259,20 +282,25 @@ new { Name = "5", Value = 5 }
 
     private async Task CancelEdit(JournalEntryModel journalEntry)
     {
-        var originalJournalEntry = journalEntries.FirstOrDefault(j => j.Id == journalEntry.Id);
-        journalEntry.EspressoBeanId = originalJournalEntry.EspressoBeanId;
-        journalEntry.GrinderId = originalJournalEntry.GrinderId;
-        journalEntry.GrindSetting = originalJournalEntry.GrindSetting;
-        journalEntry.BeanWeightInGrams = originalJournalEntry.BeanWeightInGrams;
-        journalEntry.PreExtractionTimeInSeconds = originalJournalEntry.PreExtractionTimeInSeconds;
-        journalEntry.ExtractionTimeInSeconds = originalJournalEntry.ExtractionTimeInSeconds;
-        journalEntry.EspressoWeightInGrams = originalJournalEntry.EspressoWeightInGrams;
-        journalEntry.BitternessRank = originalJournalEntry.BitternessRank;
-        journalEntry.AcidityRank = originalJournalEntry.AcidityRank;
-        journalEntry.SourRank = originalJournalEntry.SourRank;
-        journalEntry.CremaRank = originalJournalEntry.CremaRank;
-        journalEntry.SatisfactionRank = originalJournalEntry.SatisfactionRank;
-        journalEntry.Comments = originalJournalEntry.Comments;
+        var originalJournalEntry = journalEntriesToUpdate.FirstOrDefault(j => j.Id == journalEntry.Id);
+
+        if (originalJournalEntry != null)
+        {
+            journalEntry.EspressoBeanId = originalJournalEntry.EspressoBeanId;
+            journalEntry.EspressoBeanName = originalJournalEntry.EspressoBeanName;
+            journalEntry.GrinderId = originalJournalEntry.GrinderId;
+            journalEntry.GrindSetting = originalJournalEntry.GrindSetting;
+            journalEntry.BeanWeightInGrams = originalJournalEntry.BeanWeightInGrams;
+            journalEntry.PreExtractionTimeInSeconds = originalJournalEntry.PreExtractionTimeInSeconds;
+            journalEntry.ExtractionTimeInSeconds = originalJournalEntry.ExtractionTimeInSeconds;
+            journalEntry.EspressoWeightInGrams = originalJournalEntry.EspressoWeightInGrams;
+            journalEntry.BitternessRank = originalJournalEntry.BitternessRank;
+            journalEntry.AcidityRank = originalJournalEntry.AcidityRank;
+            journalEntry.SourRank = originalJournalEntry.SourRank;
+            journalEntry.CremaRank = originalJournalEntry.CremaRank;
+            journalEntry.SatisfactionRank = originalJournalEntry.SatisfactionRank;
+            journalEntry.Comments = originalJournalEntry.Comments;
+        }
 
         Reset(journalEntry);
         journalEntryGrid.CancelEditRow(journalEntry);
@@ -287,7 +315,7 @@ new { Name = "5", Value = 5 }
 
         if (journalEntries.Contains(journalEntry))
         {
-            await dataAccess.DeleteJournalEntryAsync(journalEntry);
+            await journalDataAccess.DeleteJournalEntryAsync(journalEntry);
             await OnInitializedAsync();
             await journalEntryGrid.Reload();
         }

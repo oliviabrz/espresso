@@ -4,9 +4,13 @@ namespace EspressoJournal.Models;
 
 public class JournalEntryModel
 {
+     public int Id { get; set; }
     public int EspressoBeanId { get; set; }
-    public int EspressoBeanName { get; set; }
+    public string EspressoBeanName { get; set; }
     public int GrinderId { get; set; }
+    public string GrinderBrandName { get; set; }
+    public string GrinderModelName { get; set; }
+    public string GrinderName =>  $"{GrinderBrandName} - {GrinderModelName}";
     public int GrindSetting { get; set; }
     public int BeanWeightInGrams { get; set; }
     public int PreExtractionTimeInSeconds { get; set; }
@@ -20,5 +24,4 @@ public class JournalEntryModel
     public string Comments { get; set; }
     public DateTime DateCreate { get; set; }
     public DateTime DateUpdate { get; set; }
-    public int Id { get; set; }
 }

@@ -12,6 +12,7 @@ public static class JournalEntryApi
         // CREATE
         app.MapPost("/journalentry", async (JournalEntryDtoBase journalEntry, MySqlConnection connection) =>
         {
+            journalEntry.DateCreate = DateTime.Now;
             var sql = @"
                 INSERT INTO JournalEntry (
                     EspressoBeanId, 
@@ -93,6 +94,7 @@ public static class JournalEntryApi
         // UPDATE
         app.MapPut("/journalentry/{id}", async (int id, JournalEntryDtoBase journalEntry, MySqlConnection connection) =>
         {
+            journalEntry.DateUpdate = DateTime.Now;
             var sql = @"
                 UPDATE JournalEntry
                 SET EspressoBeanId = @EspressoBeanId,
@@ -110,25 +112,26 @@ public static class JournalEntryApi
                     Comments = @Comments,
                     DateUpdate = @DateUpdate
                 WHERE Id = @id";
-            var rowsAffected = await connection.ExecuteAsync(sql,
-                new
-                {
-                    id,
-                    journalEntry.EspressoBeanId,
-                    journalEntry.GrinderId,
-                    journalEntry.GrindSetting,
-                    journalEntry.BeanWeightInGrams,
-                    journalEntry.PreExtractionTimeInSeconds,
-                    journalEntry.ExtractionTimeInSeconds,
-                    journalEntry.EspressoWeightInGrams,
-                    journalEntry.BitternessRank,
-                    journalEntry.AcidityRank,
-                    journalEntry.SourRank,
-                    journalEntry.CremaRank,
-                    journalEntry.SatisfactionRank,
-                    journalEntry.Comments,
-                    journalEntry.DateUpdate
-                });
+
+            var x = new
+            {
+                id,
+                journalEntry.EspressoBeanId,
+                journalEntry.GrinderId,
+                journalEntry.GrindSetting,
+                journalEntry.BeanWeightInGrams,
+                journalEntry.PreExtractionTimeInSeconds,
+                journalEntry.ExtractionTimeInSeconds,
+                journalEntry.EspressoWeightInGrams,
+                journalEntry.BitternessRank,
+                journalEntry.AcidityRank,
+                journalEntry.SourRank,
+                journalEntry.CremaRank,
+                journalEntry.SatisfactionRank,
+                journalEntry.Comments,
+                journalEntry.DateUpdate
+            };
+            var rowsAffected = await connection.ExecuteAsync(sql, x);
             return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
         });
 

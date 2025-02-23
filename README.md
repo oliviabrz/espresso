@@ -77,4 +77,4 @@
 ### SwiftUI
 - https://jakirhossain.com/swiftui/
 - https://developer.apple.com/tutorials/swiftui-concepts/exploring-the-structure-of-a-swiftui-app
-- https://docs.swift.org/swift-book/documentation/the-swift-programming-language/guidedtour/
+- https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics

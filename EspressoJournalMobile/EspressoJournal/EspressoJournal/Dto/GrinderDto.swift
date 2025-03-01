@@ -14,3 +14,12 @@ struct GrinderDto: Codable {
     }
 }
 
+extension GrinderDto {
+    static var sampleData: [GrinderDto] {
+        return [
+            .init(id: 1, brandName: "Breville", modelName: "Bambino Plus"),
+            .init(id: 2, brandName: "De'Longhi", modelName: "EC1000"),
+            .init(id: 3, brandName: "Krups", modelName: "K1000"),
+        ]
+    }
+}

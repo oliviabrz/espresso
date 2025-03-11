@@ -21,7 +21,8 @@ struct ContentView: View {
                     Image(systemName: "cup.and.heat.waves")
                     Text("Espresso Bean")
                 }
-            GrinderView(grinders: GrinderDto.sampleData)
+            GrinderListView()
+//            GrinderView()
                 .tabItem {
                     Image(systemName: "ev.plug.ac.type.2")
                     Text("Grinder")

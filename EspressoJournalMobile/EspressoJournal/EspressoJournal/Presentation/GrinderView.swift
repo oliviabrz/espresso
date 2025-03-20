@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-struct GrinderView: View {
+struct GrinderDetailView: View {
     @State private var grinder: GrinderDto?
     @State private var errorMessage: String?
 

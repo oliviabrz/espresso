@@ -28,10 +28,16 @@ struct GrinderListView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
+            Text("Grinders")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .padding(.bottom, 10)
+            
             if let grinderList = grinderList {
                 ForEach(grinderList, id: \.id) { grinder in
                     Text("Grinder: \(grinder.grinderName)")
+                        .cardBackground()
                 }
             } else if let errorMessage = errorMessage {
                 Text("Error: \(errorMessage)")
@@ -48,6 +54,9 @@ struct GrinderListView: View {
                         }
                     }
             }
+            Spacer() // This pushes all content to the top
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding()
     }
 }

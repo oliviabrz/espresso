@@ -11,7 +11,7 @@ struct ContentView: View {
      
     var body: some View {
         TabView{
-            JournalEntryView()
+            GrinderListView()
                 .tabItem {
                     Image(systemName: "house")
                     Text("Journal Entry")
@@ -21,8 +21,7 @@ struct ContentView: View {
                     Image(systemName: "cup.and.heat.waves")
                     Text("Espresso Bean")
                 }
-            GrinderListView()
-//            GrinderView()
+            JournalEntryView()
                 .tabItem {
                     Image(systemName: "ev.plug.ac.type.2")
                     Text("Grinder")

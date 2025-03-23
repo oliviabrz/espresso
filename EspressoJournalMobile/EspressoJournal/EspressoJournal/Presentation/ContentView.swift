@@ -13,8 +13,8 @@ struct ContentView: View {
         TabView{
             GrinderListView()
                 .tabItem {
-                    Image(systemName: "house")
-                    Text("Journal Entry")
+                    Image(systemName: "ev.plug.ac.type.2")
+                    Text("Grinder")
                 }
             EspressoBeanView()  
                 .tabItem {
@@ -23,8 +23,8 @@ struct ContentView: View {
                 }
             JournalEntryView()
                 .tabItem {
-                    Image(systemName: "ev.plug.ac.type.2")
-                    Text("Grinder")
+                    Image(systemName: "house")
+                    Text("Journal Entry")
                 }
             Text("Search")
                 .tabItem {
